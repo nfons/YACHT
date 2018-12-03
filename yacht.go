@@ -6,6 +6,7 @@ import (
 	"html/template"
 	"log"
 	"os"
+	"os/exec"
 )
 
 var env string
@@ -35,8 +36,14 @@ func main() {
 	if err != nil {
 		log.Fatal("Error creating template file: ", err)
 	}
-	//I'm pretty sure we can make this a bit better by just bypassing file save/delete logic
+	//I'm pretty sure we can make this a bit better by just bypassing file save/delete logic, and directly injecting to
+	//kubectl
 	t.Execute(f, config)
 	f.Close()
-	//os.Remove("temp.yaml")
+
+	//exec kubectl command
+	exec.Command("kubectl", "create", "-f", "temp.yaml")
+
+	//remove temp file
+	os.Remove("temp.yaml")
 }
