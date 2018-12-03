@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"html/template"
@@ -42,11 +43,15 @@ func main() {
 	f.Close()
 
 	//exec kubectl command
-	kubeErr := exec.Command("kubectl", "create", "-f", "temp.yaml").Run()
-
+	cmd := exec.Command("kubectl", "create", "-f", "temp.yaml")
+	var out bytes.Buffer
+	var stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	kubeErr := cmd.Run()
 	if kubeErr != nil {
 		os.Remove("temp.yaml")
-		log.Panic(err)
+		log.Println(fmt.Sprint(kubeErr) + " :- " + stderr.String())
 		os.Exit(1)
 	}
 
