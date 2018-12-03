@@ -42,7 +42,13 @@ func main() {
 	f.Close()
 
 	//exec kubectl command
-	exec.Command("kubectl", "create", "-f", "temp.yaml")
+	kubeErr := exec.Command("kubectl", "create", "-f", "temp.yaml").Run()
+
+	if kubeErr != nil {
+		os.Remove("temp.yaml")
+		log.Panic(err)
+		os.Exit(1)
+	}
 
 	//remove temp file
 	os.Remove("temp.yaml")
