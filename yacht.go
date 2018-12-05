@@ -55,6 +55,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	log.Println(out.String())
+
 	//remove temp file
 	os.Remove("temp.yaml")
 }
