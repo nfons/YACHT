@@ -44,6 +44,9 @@ Write your yaml files as you normally do, but define each variable as go templat
       name: {{.HTTPSVC_APPNAME}}
     spec:
       replicas: 1
+      selector:
+        matchLabels:
+          app: {{.HTTPSVC_APPNAME}}
       template:
         metadata:
           labels:
@@ -54,6 +57,7 @@ Write your yaml files as you normally do, but define each variable as go templat
             image: {{.HTTPSVC_IMAGE}}
             ports:
             - containerPort: 8080
+
 
 
 create an env file (i.e dev.conf) with the specific variables you want:
