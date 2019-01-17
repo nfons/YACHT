@@ -2,6 +2,7 @@
 Yet Another Config Handling Tool
 
 Using Go Templating engine to quickly generate env specific yaml files
+
 ### Why:
 Kubernetes Config management was a pain, especially when dealing with multiple environments
 that might contain some small changes.
@@ -38,41 +39,49 @@ The above example would require 2x YAMLS for dev/prod, by using yacht, you can r
 Write your yaml files as you normally do, but define each variable as go template variables:
 
 
-    apiVersion: apps/v1
-    kind: Deployment
-    metadata:
-      name: {{.HTTPSVC_APPNAME}}
-    spec:
-      replicas: 1
-      selector:
-        matchLabels:
-          app: {{.HTTPSVC_APPNAME}}
-      template:
-        metadata:
-          labels:
-            app: {{.HTTPSVC_APPNAME}}
-        spec:
-          containers:
-          - name: app
-            image: {{.HTTPSVC_IMAGE}}
-            ports:
-            - containerPort: 8080
+     apiVersion: apps/v1
+     kind: Deployment
+     metadata:
+       name: {{.httpsvc_appname}}
+     spec:
+       replicas: 1
+       selector:
+         matchLabels:
+           app: {{.httpsvc_appname}}
+       template:
+         metadata:
+           labels:
+             app: {{.httpsvc_appname}}
+         spec:
+           containers:
+           - name: app
+             image: {{.httpsvc_image}}
+             ports:
+             - containerPort: 8080
 
 
 
-create an env file (i.e dev.conf) with the specific variables you want:
+create an env file (i.e dev.yaml) with the specific variables you want:
 
-    HTTPSVC_IMAGE=gcr.io/google_containers/echoserver:1.8
-    HTTPSVC_APPNAME=http-svc
+    HTTPSVC_IMAGE: gcr.io/google_containers/echoserver:1.8
+    HTTPSVC_APPNAME: http-svc
+    SampleAppImage: gcr.io/hello-minikube-zero-install/hello-node
 
 next run yacht:
 
-`yacht -e dev -f YOUR_YAML`
+`yacht create -e dev.yaml -f YOUR_YAML`
+
+this is a filler for `kubectl create`
+
+if you want to run `kubectl apply`
+
+`yacht apply -e dev.yaml -f YOUR_YAML`
 
 To Test/examples, checkout:
 https://github.com/nfons/yacht-test
 
 ## License
+
 GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
